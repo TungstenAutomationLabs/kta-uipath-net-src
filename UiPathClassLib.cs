@@ -25,7 +25,7 @@ namespace UiPathClassLib
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
         }
 
-        public string GetExtAppAuthToken(string extAppId, string extAppSecret)
+        public string GetExtAppAuthToken(string extAppId, string extAppSecret, string apiScopes)
         {
             var client = new HttpClient();
 
@@ -33,7 +33,8 @@ namespace UiPathClassLib
                 {
                     {"grant_type", "client_credentials"},
                     {"client_id", extAppId },
-                    {"client_secret", extAppSecret }
+                    {"client_secret", extAppSecret },
+                    {"scopes", apiScopes }
                 }
             );
 
@@ -67,11 +68,13 @@ namespace UiPathClassLib
             return authToken;
         }
 
+        
         /*
-
-        public string GetRobotId(string authToken, string robotUrl)
+        public string GetRobotId(string authToken, string instanceUrl, string robotUrl)
         {
-            string url = Url + robotUrl;
+            //robot url = odata/Robots?$filter=Name
+            //robot url = robot url + robit ID + "'&$top=1"
+            string url = instanceUrl + robotUrl;
             var client = new HttpClient();
 
             var request = new FormUrlEncodedContent(new Dictionary<string, string>
@@ -87,6 +90,8 @@ namespace UiPathClassLib
             string jobId = (string)body["value"][0]["Id"];
             return jobId;
         }
+
+        /*
 
         public string GetReleaseKey(string authToken, string processUrl)
         {
